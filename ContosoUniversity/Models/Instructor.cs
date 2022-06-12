@@ -29,7 +29,7 @@ namespace ContosoUniversity.Models
             get { return LastName + ", " + FirstMidName; }
         }
 
-        public ICollection<CourseAssignment> CourseAssignments { get; set; }
+        public ICollection<CourseAssignment> CourseAssignments { get; set; } = new HashSet<CourseAssignment>();
         public OfficeAssignment? OfficeAssignment { get; set; }
     }
 }
