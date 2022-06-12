@@ -3,6 +3,7 @@ using ContosoUniversity.Models;
 using ContosoUniversity.Models.SchoolViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 using System.Diagnostics;
 
 namespace ContosoUniversity.Controllers
@@ -36,14 +37,40 @@ namespace ContosoUniversity.Controllers
 
         public async Task<ActionResult> About()
         {
-            IQueryable<EnrollmentDateGroup> data = _context.Students.GroupBy(a => a.EnrollmentDate).Select(
-                b => new EnrollmentDateGroup()
+            List<EnrollmentDateGroup> groups = new List<EnrollmentDateGroup>();
+            var conn = _context.Database.GetDbConnection();
+            try
+            {
+                await conn.OpenAsync();
+                using (var command = conn.CreateCommand())
                 {
-                    EnrollmentDate = b.Key,
-                    StudentCount = b.Count()
-                });
+                    string query = "SELECT EnrollmentDate, COUNT(*) AS StudentCount "
+                                            + "FROM Person "
+                                            + "WHERE Discriminator = 'Student' "
+                                            + "GROUP BY EnrollmentDate";
 
-            return View(await data.AsNoTracking().ToListAsync());
+                    command.CommandText = query;
+                    DbDataReader reader = await command.ExecuteReaderAsync();
+                    if (reader.HasRows)
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var row = new EnrollmentDateGroup()
+                            {
+                                EnrollmentDate = reader.GetDateTime(0),
+                                StudentCount = reader.GetInt32(1)
+                            };
+                            groups.Add(row);
+                        }
+                    }
+                    reader.Dispose();
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return View(groups);
         }
     }
 }
