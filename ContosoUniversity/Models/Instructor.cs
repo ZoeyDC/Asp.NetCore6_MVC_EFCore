@@ -3,35 +3,33 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    public class Student
+    public class Instructor
     {
         public int ID { get; set; }
 
         [Required]
-        [StringLength(50, MinimumLength = 2)]
         [Display(Name = "Last Name")]
+        [StringLength(50)]
         public string LastName { get; set; } = null!;
 
         [Required]
-        [StringLength(50, MinimumLength = 2)]
         [Column("FirstName")]
         [Display(Name = "First Name")]
+        [StringLength(50)]
         public string FirstMidName { get; set; } = null!;
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Enrollment Date")]
-        public DateTime EnrollmentDate { get; set; }
+        [Display(Name = "Hire Date")]
+        public DateTime HireDate { get; set; }
 
         [Display(Name = "Full Name")]
         public string FullName
         {
-            get
-            {
-                return LastName + ", " + FirstMidName;
-            }
+            get { return LastName + ", " + FirstMidName; }
         }
 
-        public ICollection<Enrollment> Enrollments { get; set; } = new HashSet<Enrollment>();
+        public ICollection<CourseAssignment> CourseAssignments { get; set; }
+        public OfficeAssignment? OfficeAssignment { get; set; }
     }
 }

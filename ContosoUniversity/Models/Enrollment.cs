@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ContosoUniversity.Models
 {
@@ -10,6 +8,7 @@ namespace ContosoUniversity.Models
         A, B, C, D, F
     }
 
+    [Index(nameof(CourseID), nameof(StudentID), IsUnique = true)]
     public class Enrollment
     {
         public int EnrollmentID { get; set; }
@@ -17,7 +16,8 @@ namespace ContosoUniversity.Models
         public int CourseID { get; set; }
 
         public int StudentID { get; set; }
-        
+
+        [DisplayFormat(NullDisplayText = "No grade")]
         public Grade? Grade { get; set; }
 
         public Course Course { get; set; } = null!;

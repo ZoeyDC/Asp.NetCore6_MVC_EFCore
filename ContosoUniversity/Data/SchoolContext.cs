@@ -19,11 +19,23 @@ namespace ContosoUniversity.Data
 
         public DbSet<Student> Students => Set<Student>();
 
+        public DbSet<Department> Departments => Set<Department>();
+        public DbSet<Instructor> Instructors => Set<Instructor>();
+        public DbSet<OfficeAssignment> OfficeAssignments => Set<OfficeAssignment>();
+        public DbSet<CourseAssignment> CourseAssignments => Set<CourseAssignment>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Course>().ToTable(nameof(Course));
             modelBuilder.Entity<Enrollment>().ToTable(nameof(Enrollment));
             modelBuilder.Entity<Student>().ToTable(nameof(Student));
+            modelBuilder.Entity<Department>().ToTable(nameof(Department));
+            modelBuilder.Entity<Instructor>().ToTable(nameof(Instructor));
+            modelBuilder.Entity<OfficeAssignment>().ToTable(nameof(OfficeAssignment));
+            modelBuilder.Entity<CourseAssignment>().ToTable(nameof(CourseAssignment));
+
+            modelBuilder.Entity<CourseAssignment>()
+                .HasKey(c => new { c.CourseID, c.InstructorID });
         }
     }
 }
